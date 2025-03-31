@@ -1,0 +1,120 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Batch</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Batch List</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        {% if data %}
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Batches</h5>
+                    <div class="row mb-2">
+                        <div class="col-9"><input type="hidden" value="{{ s }}" id="hid"></div>
+                        <div class="col-3">
+                            <input type="text" placeholder="Batch..." class="form-control form-control-sm" id="bname">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Batch</th>
+                                    <th>Course</th>
+                                    <th>Teachers</th>
+                                    <th>Closing date</th>
+                                    <th>Duration</th>
+                                    <th colspan="2">#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>{{i.title}}</td>
+                                    <td>{{i.course.course_name}}</td>
+                                    <td>
+                                        {% for j in i.teacher.all %}
+                                        
+                                        {% if forloop.last %}
+                                        {{j.name}}
+                                        {% else %}
+                                        {{j.name|add:','}}
+                                        {% endif %}
+                                        
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{i.closing_date}}</td>
+                                    <td>{{i.start_date}} - {{i.end_date}}</td>
+
+                                    <td><a href="{% url 'batch_students' %}?b_id={{i.b_id}}" class="btn btn-sm btn-dark text-danger">Students </a></a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    function toggleText(articleId) {
+        var fullText = document.getElementById('full-text-' + articleId);
+        var shortText = document.getElementById('short-text-' + articleId);
+        var readMoreLink = document.getElementById('read-more-' + articleId);
+
+        // Toggle visibility of full text
+        if (fullText.style.display === "none") {
+            fullText.style.display = "block";
+            shortText.style.display = "none";
+            readMoreLink.innerHTML = "Read Less";
+        } else {
+            fullText.style.display = "none";
+            shortText.style.display = "block";
+            readMoreLink.innerHTML = "Read More";
+        }
+    }
+</script>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+      $("#bname").keyup(function () {
+            var bname = $(this).val();
+            var s = $('#hid').val();
+            
+            $.ajax({
+  
+                  url: '/search_batch/',
+                  data: {
+                    'bname': bname,
+                    's': s,
+                  },
+                  
+                  success: function (data) {
+  
+                    $("#tb").html(data)
+  
+                    }
+            });
+          });
+    });
+    </script>
+{% endblock content %}

@@ -1,0 +1,76 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid page-header py-3 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container text-center py-4">
+        <h1 class="display-5 text-white animated slideInDown mb-4">About Us</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">About Us</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="h-100">
+                    <div class="border-start border-5 border-primary ps-4 mb-5">
+                        <h6 class="text-body text-uppercase mb-2">About Us</h6>
+                        <h1 class="display-6 mb-0">Welcome to where possibilities begin</h1>
+                    </div>
+                    <p>
+                        Welcome to Online Learning Management System, your gateway to quality education anytime, anywhere. We are a dedicated e-learning platform designed to empower students, professionals, and lifelong learners with comprehensive courses across various domains.
+
+                        Our mission is to bridge the gap between learners and expert educators by providing interactive, engaging, and accessible online courses. Whether you are preparing for competitive exams, upskilling for career growth, or exploring new interests, we have the right resources to support your learning journey.
+                    </p>
+                    <p class="mb-4">At Online Learning Management System , we believe that education should be flexible and cater to individual learning styles. Our platform offers live classes, recorded sessions, quizzes, and assignments to enhance understanding and retention.
+
+                        We collaborate with experienced instructors and industry experts to bring high-quality content that aligns with real-world applications. Our AI-driven recommendation system helps learners find courses tailored to their needs, ensuring a personalized learning experience.</p>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4 mb-5">
+                    <h6 class="text-body text-uppercase mb-2">Testimonial</h6>
+                    <h1 class="display-6 mb-0">What Our Happy Students Say!</h1>
+                </div>
+                
+            </div>
+            <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="owl-carousel testimonial-carousel">
+                    
+                    {% for i in data %}
+                    <div class="testimonial-item">
+                        {% if i.image %}
+                        <img src="{{i.image}}" class="img-fluid mb-4" alt="">
+                        {% else %}
+                        <img src="{% static 'user/img/dum.jpg' %}" class="img-fluid mb-4" alt="">
+                        {% endif %}
+                        <p class="fs-5">{{ i.feedback }}</p>
+                        <div class="bg-primary mb-3" style="width: 60px; height: 5px"></div>
+                        <h5>{{ i.name }}</h5>
+                        <span>{{ i.feedback_date|date:"d-m-Y" }}</span>
+                    </div>
+                    {% endfor %}
+                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

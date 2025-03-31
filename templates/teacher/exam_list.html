@@ -1,0 +1,145 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Exam List</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Exam List</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Exam List</h5>
+                  {% if data %}
+                  <div class="row mb-2">
+                    <div class="col-9"></div>
+                    <div class="col-3">
+                        <input type="text" placeholder="Exam..." class="form-control form-control-sm" id="ename">
+                    </div>
+                </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Exam</th>
+                                    <th>Topic</th>
+                                    <th>Duration</th>
+                                    <th>Batches</th>
+                                    <th>Status</th>
+                                    <th colspan="2">#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <td>{{ i.title }}</td>
+                                    <td>{{ i.topic|truncatechars:50 }} </td>
+                                    <td>{{ i.et }}</td>
+                                    <td>
+                                        {% for j in i.batch.all|slice:":1" %}
+                                          
+                                                {{ j.title }}
+                                           
+                                        {% endfor %}...
+                                    </td>
+                                    <td>
+                                        
+                                        {% if i.status == False %}
+                                        <button type="button" class="btn btn-sm btn-warning mb-1" data-bs-toggle="modal" data-bs-target="#verticalycentered{{ forloop.counter }}">
+                                            Publish
+                                        </button>
+                                        <div class="modal fade" id="verticalycentered{{ forloop.counter }}" tabindex="-1" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Publish exam</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="alert alert-danger px-1 alert-dismissible fade show" role="alert">
+                                                            <h6 class="fw-bold">Are you sure you want to set exam as active?</h6>
+                                                            <hr>
+                                                            <p class="text-warning h6"><i class="bi bi-exclamation-triangle"></i> Alert</p>
+                                                            <p class="mb-0">Once the exam is activated, you will not be able to add questions.</p>
+                                                        </div>
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-sm btn-danger px-4" data-bs-dismiss="modal">No</button>
+                                                            <a href="{% url 'active_exam' %}?e_id={{ i.e_id }}" class="btn btn-sm btn-primary px-4 ms-2">Yes</a>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="badge badge-primary bg-primary">Active</div>
+
+                                        {% endif %}
+                                            
+                                        
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'exam_details' %}?e_id={{i.e_id}}" class="btn btn-sm btn-dark">Details</a>
+                                           
+                                    </td>
+                                    <td>
+                                        {% if i.status == False %}
+                                            <a href="{% url 'questions' %}?e_id={{i.e_id}}" class="btn btn-sm btn-success">Questions</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <h5>No list available</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+      $("#ename").keyup(function () {
+            var ename = $(this).val();
+            
+            $.ajax({
+  
+                  url: '/search_exam/',
+                  data: {
+                    'ename': ename,
+                  },
+                  
+                  success: function (data) {
+  
+                    $("#tb").html(data)
+  
+                    }
+            });
+          });
+    });
+    </script>
+
+{% endblock content %}

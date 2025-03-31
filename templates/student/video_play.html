@@ -1,0 +1,108 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Video lesson</h6>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="container-fluid py-2">
+            <div class="row g-4">
+                <div class="col-lg-7 col-xl-8 mt-0">
+                    <div class="position-relative overflow-hidden rounded">
+                        <!-- <img src="{% static 'user/img/ol.jpg' %}" class="img-fluid rounded img-zoomin w-100" alt=""> -->
+                        <video controls autoplay="" controlsList="nodownload" class="img-fluid rounded img-zoomin w-100">
+                            <source src="{{ data.video }}" type="video/mp4"></video>
+                            <source src="{{ data.video }}" type="video/webm"></video>
+                            <source src="{{ data.video }}" type="video/matroska"></video>
+                            
+                    </div>
+                    <div class="border-bottom py-2">
+                        <div class="h5 text-dark mb-0">{{ data.title }}</div>
+                    </div>
+                    <p class="mt-3 mb-4 d-flex bd-highlight">
+                        <small class="bd-highlight p-2" ><i class="fa fa-user"> Lecturer : {{ data.teacher.name }}</i> </small>
+                        <small class="bd-highlight p-2"><i class="fa fa-book"> Subject : {{ data.subject.subject }}</i> </small>
+                        <small class="bd-highlight p-2 ms-auto"><i class="fa fa-calendar"> {{ data.created_at|date:"Y-m-d" }}</i> </small>
+                    </p>
+                    <div class="bg-light p-4 rounded">
+                        <div class="news-2">
+                            <h6 class="mb-4">Lecture note</h6>
+                        </div>
+                        <div class="row g-4 align-items-center">
+                            <div class="col-md-12">
+                                <div class="rounded overflow-hidden">
+                                    
+                                    {% for i in data.notes %}
+                                        {{ forloop.counter }}. <a href="{{ i.note }}" class="text-info">{{ i.note|slice:"7:"|cut:"%" }}</a><br>
+                                    {% empty %}
+                                        No lecture notes in this video
+                                    {% endfor %}
+                                        
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <h6 class="mb-4">Send your doubt</h6>
+                                <form action="{% url 'chat' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ data.teacher.login_id }}" name="receiver_id">
+                                    <input type="hidden" name="l_id" value="{{ data.l_id }}">
+                                    <div class="d-flex justify-content-between">
+                                        <textarea  class="form-control mr-2 border-0 w-100 shadow-lg" required name="msg" style="height: 2rem;border-radius: 5px;" placeholder="Type a message" id="address"></textarea>
+                                        <button type="submit" class="btn btn-skew"><i class="fa fa-paper-plane"></i></button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5 col-xl-4">
+                    <div class="bg-light rounded p-4 pt-0">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="d-flex flex-column">
+                                    <a href="#" class="h4 mb-2">More Lesson</a>
+                                </div>
+                            </div>
+                            
+                            {% for i in data.teacher.other_lessons %}
+                                <div class="col-12">
+                                    <div class="row g-4 align-items-center">
+                                        <div class="col-5">
+                                            <a href="{% url 'video_play' %}?l_id={{ i.l_id }}" class="overflow-hidden rounded">
+                                                <video class="img-zoomin img-fluid rounded w-100">
+                                                    <source src="{{ data.video }}" type="video/mp4"></video>
+                                                    <source src="{{ data.video }}" type="video/webm"></video>
+                                                    <source src="{{ data.video }}" type="video/matroska"></video>
+                                            </a>
+                                        </div>
+                                        <div class="col-7">
+                                            <div class="features-content d-flex flex-column">
+                                                <a href="{% url 'video_play' %}?l_id={{ i.l_id }}" class="h6">{{ i.title }}</a>
+                                                <small><i class="fa fa-calendar"> {{ i.created_at|date:"Y-m-d" }}</i> </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                                
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

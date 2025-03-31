@@ -1,0 +1,66 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Our Courses</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-9 border">
+                <img src="{% static 'user/img/download.png' %}" height="65" alt="">
+                <h4 style="display: inline;">ONLINE LEANING MANAGEMENT SYSTEM</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr><th colspan="2">Course :</th></tr>
+                        <tr>
+                            <th>Course</th>
+                            <td>{{ data.batch.course.course_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Batch</th>
+                            <td>{{ data.batch.title }} ({{ data.batch.start_date }} - {{ data.batch.end_date }})</td>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <td>{{ data.enrolled_at|date:"d-m-Y" }}</td>
+                        </tr>
+                    </thead>
+                </table>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr><th colspan="2">Student :</th></tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ data.student.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Contact</th>
+                            <td>{{ data.student.contact_number }}</td>
+                        </tr>
+                    </thead>
+                </table> 
+                
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Amout paid</th>
+                            <td>₹ {{ data.amount }}</td>
+                        </tr>
+                    </thead>
+                </table> 
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

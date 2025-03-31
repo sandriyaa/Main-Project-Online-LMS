@@ -1,0 +1,107 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Submissions</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Submissions</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Submissions</h5>
+                    {% if data %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Due date</th>
+                                    <th>Mark</th>
+                                    <th>Submitted date</th>
+                                    <th>Student</th>
+                                    <th>Assignment</th>
+                                    <th>Give mark</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>{{ i.assignment.title }}</td>   
+                                    <td>
+                                        <div class="article-container">
+                                            <p id="short-text-{{ i.assignment.a_id }}" class="short-text">{{ i.assignment.description|truncatechars:20 }}...</p>
+                                            
+                                            <p id="full-text-{{ i.assignment.a_id }}" class="full-text" style="display:none;">{{ i.assignment.description|linebreaksbr }}</p>
+                                            
+                                            <a href="javascript:void(0);" id="read-more-{{ i.assignment.a_id }}" onclick="toggleText('{{ i.assignment.a_id }}')" class="read-more small">Read More</a>
+                                        </div>
+                                    </td>
+                                    <td>{{i.assignment.due_date}}</td>  
+                                    <td>{{i.assignment.total_mark}} </td>
+                                    <td>{{i.submitted_date}}</td>
+                                    <td>
+                                        {{i.student.name}} <br>
+                                        {{i.student.contact_number}} <br>
+                                        {{i.student.email}} 
+                                    </td>
+                                    <td><a href="{{ i.assignment_file }}">{{ i.assignment_file|slice:"7:" }}</a></td>
+                                    <td>
+                                        
+                                        {% if i.mark %}
+                                            {{ i.mark }}
+                                        {% else %}
+                                            <form action="{% url 'submission' %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="s_id" value="{{ i.s_id }}">
+                                                <input type="number" required name="mark" max="{{ i.assignment.total_mark }}" class="form-control form-control-sm">
+                                                <button type="submit" class="btn btn-sm btn-primary mt-1">Submit</button>
+                                            </form>
+                                        {% endif %}
+                                            
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <h5>No list available</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function toggleText(articleId) {
+        var fullText = document.getElementById('full-text-' + articleId);
+        var shortText = document.getElementById('short-text-' + articleId);
+        var readMoreLink = document.getElementById('read-more-' + articleId);
+
+        // Toggle visibility of full text
+        if (fullText.style.display === "none") {
+            fullText.style.display = "block";
+            shortText.style.display = "none";
+            readMoreLink.innerHTML = "Read Less";
+        } else {
+            fullText.style.display = "none";
+            shortText.style.display = "block";
+            readMoreLink.innerHTML = "Read More";
+        }
+    }
+</script>
+
+  {% endblock content %}

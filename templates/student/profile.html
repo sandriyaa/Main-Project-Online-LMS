@@ -1,0 +1,200 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-fluid page-header py-3 mb-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container text-center py-4">
+        <h1 class="display-6 text-white animated slideInDown mb-4">Profile</h1>
+        <nav aria-label="breadcrumb animated slideInDown">
+            <ol class="breadcrumb justify-content-center mb-0">
+                <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
+                <li class="breadcrumb-item"><a class="text-white" href="#">Pages</a></li>
+                <li class="breadcrumb-item text-primary active" aria-current="page">Profile</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Profile</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.5s">
+                {% if messages %}
+                    {% for message in messages %}
+                    <h6 class="alert alert-success">{{message}}</h6>       
+                    {% endfor %}
+                {% endif %}
+                <form action="{% url 'profile' %}" enctype="multipart/form-data" method="post" id="myform">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-lg-6 col-xl-6">
+                            <label for="name">Full Name</label>
+                            <input type="text" name="name" value="{{ data.name }}" class="form-control bg-light border-0" id="name">
+                        </div>
+                        <div class="col-lg-6 col-xl-6">
+                            <label for="email">Email Id</label>
+                            <input type="text" name="email" value="{{ data.email }}" class="form-control bg-light border-0" id="email">
+                        </div>
+                        <div class="col-lg-6 col-xl-6">
+                            <label for="contact_number">Contact number</label>
+                            <input type="text" name="contact_number" value="{{ data.contact_number }}" class="form-control bg-light border-0" id="contact_number">
+                        </div>
+                        <div class="col-lg-6 col-xl-6">
+                            <label for="image">Image</label>
+                            <input type="file" name="image" class="form-control bg-light border-0" id="image">
+                            {% if data.image %}
+                            <img src="{{data.image}}" height="60" width="60" class="rounded" alt="">
+                            {% else %}
+                            <img src="{% static 'user/img/dum.jpg' %}" height="60" width="60" class="rounded" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="col-12">
+                            <label for="address">Address</label>
+                            <textarea class="form-control bg-light border-0" name="address" id="address" style="height: 60px">{{ data.address }}</textarea>
+                        </div>
+                        
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary w-25 py-2">Submit</button>
+                        </div>
+                    </div>
+                </form>
+                <a href="{% url 'change_password' %}" class="text-primary text-end">Change password ? </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    (function ($, W, D)
+    {
+    var JQUERY4U = {};
+    JQUERY4U.UTIL =
+    {
+    setupFormValidation: function ()
+    {
+    $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+    var check = false;
+    return this.optional(element) || regexp.test(value);
+    },
+    "Not a valid Input."
+    );
+    
+    //form validation rules
+    $("#myform").validate({
+    ignore: [],
+    rules: {
+                
+            name: {
+                    required: true,
+                    regex : /^[A-Za-z ]+$/,
+                    minlength: 3,
+                    },
+
+            contact_number: {
+                    required: true,
+                    digits:true,
+                    minlength: 10,
+                    maxlength: 10,
+                    regex : /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/
+                    },
+
+            email: {
+                     required: true,
+                     regex :  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+                    },
+                    
+            address: {
+                    required: true,
+                    },
+
+            username: {
+                        required: true,
+                        regex : /^[A-Za-z0-9@]+$/,
+                        minlength: 5,
+                        maxlength: 15,
+                    },
+
+            password: {
+                        required: true,
+                        regex : /^[A-Za-z0-9@#*]+$/,
+                        minlength: 5,
+                        maxlength: 15,
+                    },
+
+            cpas: {
+                        required: true,
+                        regex : /^[A-Za-z0-9@#*]+$/,
+                        minlength: 5,
+                        maxlength: 15,
+                        equalTo: "#password"
+                    },
+                
+              },
+              messages: {
+    
+                contact_number: "Please Enter Valid 10 digit Phone Number - Starting from 6, 7 or 8 or 9",
+                image : "Please enter a value with a valid extension. jpg|jpeg|png",
+                username: "Please Enter Valid User Name(5-15 digit alphanumeric username",
+                password: "Please Enter Valid Password Name(5-15 digit alphanumeric  password  and @#* also allowed",
+                cpas: "Please Enter Valid Password Name(5-15 digit alphanumeric confirm password and same as above password and @#* also allowed",
+    },
+    submitHandler: function (form) {
+    form.submit();
+    }
+    });
+    }
+    }
+    //when the dom has loaded setup form validation rules
+    $(D).ready(function ($) {
+    JQUERY4U.UTIL.setupFormValidation();
+    });
+    })(jQuery, window, document);
+    </script>
+
+<script>
+    $("#username").keyup(function () {
+        $('#uname').val("");
+       var username = $(this).val();
+       var count = username.length;
+       $('#cb').html("");
+       
+       if(count>4)
+      {
+       $.ajax({
+             url: '/check_username/',
+             data: {
+                 'username': username
+             },
+             dataType: 'json',
+             success: function (data) {
+                  if (data.username_exists) {
+                        $('#cb').css('color','red');
+                        $('#cb').html(data.error);
+                  }
+                  else{
+                        $('#cb').css('color','green');
+                        $('#cb').html(data.success);
+                        $('#uname').val(1);
+                  }
+             }
+       });
+    }
+    });
+    </script>
+
+{% endblock content %}

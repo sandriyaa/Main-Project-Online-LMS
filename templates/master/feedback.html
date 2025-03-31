@@ -1,0 +1,66 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Feedback List</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Feedback List</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Feedback</h5>
+                    {% if data %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th colspan="2">Student</th>
+                                    <th>Contact</th>
+                                    <th>Feedback</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>
+                                        
+                                        {% if i.image %}
+                                        <img src="{{i.student.image}}" height="60" width="60" class="rounded" alt="">
+                                        {% else %}
+                                        <img src="{% static 'user/img/dum.jpg' %}" height="60" width="60" class="rounded" alt="">
+                                        {% endif %}
+                                    </td>       
+                                    <th>{{i.student.name}}</th>
+                                    <td>{{i.student.email}} <br>
+                                        {{i.student.contact_number}}
+                                    </td>
+                                    <td>{{i.feedback}}</td>
+                                    <td>{{i.feedback_date}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <h5>No list available</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+  {% endblock content %}

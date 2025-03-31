@@ -1,0 +1,134 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Course</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Course</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <form action="{% url 'edit_question' %}" id="myform" method="post">
+        {% csrf_token %}
+        <div class="row" id="crt">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Question</h5>
+                        <div class="row g-3">
+                            <input type="hidden" value="{{ data.q_id }}" name="q_id">
+                            <div class="col-md-12">
+                                <label for="question" class="form-label">Question</label>
+                                <textarea class="form-control form-control-sm" name="question" id="question">{{ data.question }}</textarea>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="optionA" class="form-label">Option A</label>
+                                <input type="text" class="form-control form-control-sm" name="optionA" value="{{ data.optionA }}" id="optionA">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="optionB" class="form-label">Option B</label>
+                                <input type="text" class="form-control form-control-sm" name="optionB" value="{{ data.optionB }}" id="optionB">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="optionC" class="form-label">Option C</label>
+                                <input type="text" class="form-control form-control-sm" name="optionC" value="{{ data.optionC }}" id="optionC">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="optionD" class="form-label">Option D</label>
+                                <input type="text" class="form-control form-control-sm" name="optionD" value="{{ data.optionD }}" id="optionD">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="optionD" class="form-label">Answer</label>
+                                <select name="answer" class="form-control form-control-sm">
+                                    <option value="optionA" {% if data.answer == data.optionA %} selected {% endif %}>Option A</option>
+                                    <option value="optionB" {% if data.answer == data.optionB %} selected {% endif %}>Option B</option>
+                                    <option value="optionC" {% if data.answer == data.optionC %} selected {% endif %}>Option C</option>
+                                    <option value="optionD" {% if data.answer == data.optionD %} selected {% endif %}>Option D</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-sm btn-primary mt-2">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            
+        </div>
+    </form>
+</section>
+
+
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+<script>
+    (function ($, W, D) {
+        var JQUERY4U = {};
+        JQUERY4U.UTIL = {
+            setupFormValidation: function () {
+                $.validator.addMethod(
+                    "uniqueOptions",
+                    function(value, element, params) {
+                        // Get all options
+                        var options = [$('#optionA').val(), $('#optionB').val(), $('#optionC').val(), $('#optionD').val()];
+                        // Check if there are duplicates in the array
+                        var uniqueOptions = new Set(options);
+                        return this.optional(element) || uniqueOptions.size === options.length;
+                    },
+                    "Options must be unique."
+                );
+                
+                // Form validation rules
+                $("#myform").validate({
+                    ignore: [],
+                    rules: {
+                        optionA: {
+                            required: true
+                        },
+                        optionB: {
+                            required: true
+                        },
+                        optionC: {
+                            required: true
+                        },
+                        optionD: {
+                            required: true
+                        },
+                        answer: {
+                            required: true
+                        },
+                        question: {
+                            required: true
+                        },
+                    },
+                    messages: {
+                        optionA: "Please enter option A.",
+                        optionB: "Please enter option B.",
+                        optionC: "Please enter option C.",
+                        optionD: "Please enter option D.",
+                        answer: "Please select the correct answer."
+                    },
+                    submitHandler: function (form) {
+                        form.submit();
+                    }
+                });
+            }
+        };
+
+        // When the DOM has loaded, set up form validation rules
+        $(D).ready(function ($) {
+            JQUERY4U.UTIL.setupFormValidation();
+        });
+    })(jQuery, window, document);
+</script>
+
+
+{% endblock content %}

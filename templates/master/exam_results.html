@@ -1,0 +1,67 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Exam Result</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Exam Result</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Exam Result</h5>
+                  <div class="border rounded p-2 mb-2">
+                    <h5>{{ exam.title }} </h5>
+                    <p>Duration : {{ exam.et }}</p>
+                    <p>{{ exam.topic }}</p>
+                  </div>
+                {% if data %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th colspan="2">Student</th>
+                                    <th>Mark</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>
+                                        {% if i.image %}
+                                        <img src="{{i.image}}" height="60" width="60" class="rounded" alt="">
+                                        {% else %}
+                                        <img src="{% static 'user/img/dum.jpg' %}" height="60" width="60" class="rounded" alt="">
+                                        {% endif %}
+                                    </td>
+                                    <td>{{i.name}}</td>
+                                    <td>{{ i.total_marks }} / {{ i.total_questions }}</td>
+                                    <td><a href="{% url 'student_answer' %}?sr_id={{i.sr_id}}&e_id={{i.answers__question__exam_id}}" class="btn btn-sm btn-warning text-right mb-2">View Answer <i class="fas fa-arrow-right"></i></a></td>
+                                </tr>
+                                
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <h4>Not found any answer</h4>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</section>
+
+  {% endblock content %}

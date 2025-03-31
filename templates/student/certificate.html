@@ -1,0 +1,43 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">My Courses</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12">
+                <a href="{% url 'certificate_pdf' %}?e_id={{ data.e_id }}" class="btn btn-sm btn-primary">Download <i class="bi bi-download fa-lg"></i></a>
+            </div>
+            <div class="col-12 border p-4 w-50 mx-auto">
+                <div class="text-center"><img src="{% static 'user/img/download.png' %}" height="100" alt=""></div>
+                <h3 class="text-center mb-3">ONLINE LEANING MANAGEMENT SYSTEM</h3>
+                <hr>
+                <h6 class="text-center mb-3">Certificate of completion</h6>
+                <p class="mb-5" style="text-align: justify;line-height: 300%;">
+                    The academic board of of ONLINE LEANING MANAGEMENT SYSTEM certify that
+                     <b>"{{ data.student.name }}"</b> has successfully completed the training program
+                      in <b>"{{ data.batch.course.course_name }}"</b> from "{{ data.batch.start_date }}" to "{{ data.batch.end_date }}" at ONLINE LEANING MANAGEMENT SYSTEM Platform.</p>
+                <div class="d-flex justify-content-between">
+                    <span>Issue date: {{ data.issue_date|date:"d-m-Y" }}</span>
+                    <span>
+                        <img src="{% static 'user/img/gett.jpg' %}" height="100" alt="">
+                    </span>
+                </div>
+            </div>
+                
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

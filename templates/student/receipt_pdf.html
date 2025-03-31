@@ -1,0 +1,82 @@
+{% load static %}
+
+<html>
+    <head>
+        <style>
+        body{
+                font-family: "Roboto", sans-serif;
+            }
+        h2{
+            text-align: center;
+            font-size: 25px;
+            display: inline;
+            margin-bottom: 10px;
+        }
+        .h3{
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .table{
+            width: 100%; 
+            margin-top: 10px; 
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 4px;
+            text-align: left;
+        }
+
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="col">
+                <img src="{{ logo_url }}" height="65" alt="">
+                <h2>ONLINE LEANING MANAGEMENT SYSTEM</h2>
+                <h3 class="h3">Payment receipt</h3>
+                <table class="table">
+                    <thead>
+                        <tr><th colspan="2">Course :</th></tr>
+                        <tr>
+                            <th>Course</th>
+                            <td>{{ data.batch.course.course_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Batch</th>
+                            <td>{{ data.batch.title }} ({{ data.batch.start_date }} - {{ data.batch.end_date }})</td>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <td>{{ data.enrolled_at|date:"d-m-Y" }}</td>
+                        </tr>
+                    </thead>
+                </table>
+                <table class="table">
+                    <thead>
+                        <tr><th colspan="2">Student :</th></tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ data.student.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Contact</th>
+                            <td>{{ data.student.contact_number }}</td>
+                        </tr>
+                    </thead>
+                </table> 
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="h3" style="border: none;text-align: right;">Amout paid :</th>
+                            <td class="h3" style="border: none;text-align: right;"> {{ data.amount }}</td>
+                        </tr>
+                    </thead>
+                </table> 
+            </div>
+            
+        </div>
+    </body>
+</html>

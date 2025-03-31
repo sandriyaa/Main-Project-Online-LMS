@@ -1,0 +1,197 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Edit Exam</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Edit Exam</li>
+      </ol>
+    </nav>
+  </div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-9 m-auto">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Edit Exam</h5>
+                    <form class="row g-3" action="{% url 'edit_exam' %}" method="post" enctype="multipart/form-data" id="myform">
+                        {% csrf_token %}
+                        <input type="hidden" name="e_id" value="{{ data.e_id }}">
+                        <div class="col-md-12">
+                            <label for="title" class="form-label">Exam name</label>
+                            <input type="text" class="form-control form-control-sm" name="title" value="{{ data.title }}" id="exam_name">
+                        </div>
+                        <div class="col-md-12">
+                            <label for="topic" class="form-label">Topic</label>
+                            <textarea class="form-control form-control-sm" name="topic" id="topic">{{ data.topic }}</textarea>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="" class="form-label">Batches</label>
+                            <select class="form-control form-control-sm" required multiple name="batch_id" id="batch_id">
+                                {% if bat %}
+                                {% for i in bat %}
+                                    <option value="{{i.b_id}}" {% if i.b_id in ids %} selected {% endif %}>{{i.title}}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    $(document).ready(function() {
+    var currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 2);  
+    var year = currentDate.getFullYear();
+    var month = (currentDate.getMonth()).toString().padStart(2, '0'); 
+    var day = currentDate.getDate().toString().padStart(2, '0'); 
+    var formattedDate = `${year}-${month}-${day}`;
+
+    $('#exam_date').attr('min', formattedDate);
+
+    $('#starting_time').on('change', function() {
+        var startingTime = $(this).val();
+        if (startingTime) {
+            var timeParts = startingTime.split(':');
+            var startDate = new Date();
+            startDate.setHours(parseInt(timeParts[0]));
+            startDate.setMinutes(parseInt(timeParts[1]));
+
+            startDate.setMinutes(startDate.getMinutes() + 2);
+
+            var hours = startDate.getHours().toString().padStart(2, '0');
+            var minutes = startDate.getMinutes().toString().padStart(2, '0');
+            var newEndingTime = `${hours}:${minutes}`;
+
+            $('#ending_time').attr('min', newEndingTime);
+        }
+    });
+});
+
+</script>
+
+<script>
+    (function ($, W, D)
+    {
+    var JQUERY4U = {};
+    JQUERY4U.UTIL =
+    {
+    setupFormValidation: function ()
+    {
+    $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+    var check = false;
+    return this.optional(element) || regexp.test(value);
+    },
+    "Not a valid Input."
+    );
+    
+    //form validation rules
+    $("#myform").validate({
+    ignore: [],
+    rules: {
+                
+            
+            topic: {
+                    required: true,
+                    minlength: 3,
+                    },
+            exam_name: {
+                    required: true,
+                    minlength: 3,
+                    },
+
+            course_id: {
+                required: true,
+            },
+
+            subject_id: {
+                required: true,
+            },
+
+            semester_id: {
+                required: true,
+            },
+
+            exam_date: {
+                required: true,
+            },
+
+            starting_time: {
+                required: true,
+            },
+
+            ending_time: {
+                required: true,
+            },
+
+                },
+
+        messages: {
+
+        quantity: "Please enter",
+        
+    },
+    submitHandler: function (form) {
+    form.submit();
+    }
+    });
+    }
+    }
+    //when the dom has loaded setup form validation rules
+    $(D).ready(function ($) {
+    JQUERY4U.UTIL.setupFormValidation();
+    });
+    })(jQuery, window, document);
+    </script>
+
+<script>
+    $(document).ready(function(){
+        $("#course_id").change(function(){
+        var course_id = $(this).val();
+
+            $.ajax({
+
+                url: '/display_subject/',
+                data: {
+                    'course_id': course_id
+                },
+                dataType: 'json',
+                success: function (data) {
+
+
+            let html_data = '<option value="">--Select--</option>';
+            data.forEach(function (data) {
+            html_data += `<option value="${data.s_id}">${data.subject}</option>`
+            });
+            $("#subject_id").html(html_data);
+
+                }
+            });
+
+        });
+    });
+    </script> 
+
+{% endblock content %}

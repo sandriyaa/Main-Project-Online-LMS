@@ -1,0 +1,44 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Video lesson</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid my-5 p-0">
+            <div class="row g-0">
+                
+                {% for i in data %}
+                    <div class="col-xl-4 col-sm-6 wow fadeIn" data-wow-delay="0.1s">
+                        <div class="p-2">
+                            <div class="position-relative">
+                                <video class="img-fluid w-100">
+                                    <source src="{{ i.thumb_nail }}" type="video/mp4"></video>
+                                    <source src="{{ i.thumb_nail }}" type="video/webm"></video>
+                                    <source src="{{ i.thumb_nail }}" type="video/matroska"></video>
+                                <div class="facts-overlay">
+                                    <h4 class="text-white mb-1">{{ i.subject__subject }}</h4>
+                                    <p class="text-white mb-3 small font-monospace"><i class="fas fa-user small"></i> {{ i.teacher }}</p>
+                                    <a class="text-white small" href="{% url 'video_list' %}?teacher_id={{ i.teacher_id }}">{{ i.video_count }} videos<i class="fa fa-arrow-right ms-3"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %} 
+                <h3 class="text-secondary"><b>!</b> No Videos found.</h3> 
+                {% endfor %}
+                    
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,76 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Exam Details</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Exam Details</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        {% if data %}
+        <div class="col-lg-12">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Exam Details</h5>
+                    <h4 class="fw-bold">Exam: {{ data.title }}</h4>
+                    <div class="row">
+                        <div class="col-6">
+                            <p>Duration: {{ data.vt }}</p>
+                            Batches: <ol> {% for j in data.batch.all %}
+                               
+                                    <li>{{ j.title }}</li>
+                               
+                            {% endfor %}</ol>
+                        </div>
+                        <div class="col-6">
+                            <p>Topic: <br> {{ data.topic }}</p>
+                        </div>
+                        <hr>
+                    </div>
+                        <h4 class="fw-bold">Questions</h4>
+                        <ol>
+                            {% for question in data.questions_set.all %}
+                            <li>
+                                <p> 
+                                    {{ question.question }}   
+                                    
+                                    <!-- {% if data.editans == True %}
+                                        <a href="{% url 'edit_question' %}?q_id={{ question.q_id }}" class="me-3 btn btn-sm btn-primary">Edit</a>
+                                    {% endif %} -->
+                                        
+                                </p>
+                                <ul>
+                                    <li>A) {{ question.optionA }}</li>
+                                    <li>B) {{ question.optionB }}</li>
+                                    <li>C) {{ question.optionC }}</li>
+                                    <li>D) {{ question.optionD }}</li>
+                                    <li>Answer : {{ question.answer }}</li>
+                                </ul>
+                            </li>
+                            {% empty %}
+                            <p>No questions available for this exam.</p>
+                            {% endfor %}
+                        </ol>
+                    
+                </div>
+            </div>
+        </div>
+        {% else %}
+            <h4>No list available</h4>
+        {% endif %}
+    </div>
+</section>
+
+  {% endblock content %}

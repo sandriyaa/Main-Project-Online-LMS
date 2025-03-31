@@ -1,0 +1,88 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Edit subject</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Edit subject</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Edit subject</h5>
+                    <form class="row g-3" action="{% url 'edit_subject' %}" method="post" id="myform">
+                        {% csrf_token %}
+                        <input type="hidden" name="s_id" value="{{data.s_id}}">
+                        <div class="col-md-12">
+                            <label for="" class="form-label">Subject name</label>
+                            <input type="text" name="subject" value="{{data.subject}}" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+
+<script>
+    (function ($, W, D)
+    {
+    var JQUERY4U = {};
+    JQUERY4U.UTIL =
+    {
+    setupFormValidation: function ()
+    {
+    $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+    var check = false;
+    return this.optional(element) || regexp.test(value);
+    },
+    "Not a valid Input."
+    );
+    
+    //form validation rules
+    $("#myform").validate({
+    ignore: [],
+    rules: {
+                
+            
+            subject: {
+                    required: true,
+                    minlength: 2,
+                    },
+              },
+
+        messages: {
+
+        quantity: "Please enter",
+        
+    },
+    submitHandler: function (form) {
+    form.submit();
+    }
+    });
+    }
+    }
+    //when the dom has loaded setup form validation rules
+    $(D).ready(function ($) {
+    JQUERY4U.UTIL.setupFormValidation();
+    });
+    })(jQuery, window, document);
+    </script>
+
+  {% endblock content %}

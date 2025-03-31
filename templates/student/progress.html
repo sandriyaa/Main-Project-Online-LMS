@@ -1,0 +1,162 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Our Courses</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            {% if data or data2 %}
+
+            <div class="col-6">
+                <div class="row g-4">
+                    <h5>{{ batch.title }}</h5>
+                    <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="team-item position-relative">
+                            {% if std.image %}
+                                <img class="img-fluid" src="{{ std.image }}" style="max-height: 15rem;" alt="">
+                            {% else %}
+                                <img src="{% static 'user/img/dum.jpg' %}" style="max-height: 15rem;" class="img-fluid" alt="">
+                            {% endif %}
+                            <div class="team-text bg-white p-4">
+                                <h5>{{ std.name }}</h5>
+                                <span>{{ std.contact_number }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="row">
+                    <div class="col-6">
+                        <div class="d-flex flex-wrap justify-content-around pb-2 pt-4">
+                            <div class="px-2 pb-2 pb-md-0 text-center mb-3">
+                                <div id="circles-1"></div>
+                                <h6 class="fw-bold mt-3 mb-0">Your performance</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="h6">
+                            <p>Excellent (A+) - 90-100%</p>
+                            <p>Very good (A) -  80-89%</p>
+                            <p>Good (B+) - 70-79%</p>
+                            <p>Above average (B) - 60-69%</p>
+                            <p>Average (C) - 50-59%</p>
+                            <p>Poor (C+) - 40-0%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if data %}
+            <h5 class="ml-0 p-0">Exams</h5>
+            <table class="table table-bordered">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>#</th>
+                        <th>Exam</th>
+                        <th>Total questions</th>
+                        <th>Your Mark</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.title }}</td>
+                        <td>{{ i.total_questions }}</td>
+                        <td>{{ i.total_marks }} / {{ i.total_questions }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="3">Total</th>
+                        <th>{{ totals_ex.tm }}/{{ totals_ex.tq }}</th>
+                    </tr>
+                </tbody>
+            </table>
+            {% endif %}
+               
+            {% if data2 %}
+            <h5 class="ml-0 p-0">Assignment</h5>
+            <table class="table table-bordered">
+                <thead class="bg-dark text-white">
+                    <tr>
+                        <th>#</th>
+                        <th>Assignment</th>
+                        <th>Total mark</th>
+                        <th>Your Mark</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in data2 %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ i.title }}</td>
+                        <td>{{ i.tmark }}</td>
+                        <td>{{ i.smark }}</td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="3">Total</th>
+                        <th>{{ totals_ass.sm }}/{{ totals_ass.tm }}</th>
+                    </tr>
+                </tbody>
+            </table>
+            {% endif %}
+            {% else %}
+            <h5>You are not done any assessment</h5>
+                
+            {% endif %}
+                
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'user/ch/circles.min.js' %}"></script>
+
+<script>
+    var colo = '';
+    var dt = JSON.parse('{{ pro|safe }}');
+    if (dt > 80)
+    {
+        colo = ['#eeeded', '#2BB930']
+    }
+    else if (dt > 69)
+    {
+        colo = ['#eeeded', '#e7eb15']
+    }
+    else
+    {
+        colo = ['#eeeded', '#F25961']
+    }
+
+    Circles.create({
+        id:'circles-1',
+        radius:70,
+        value:JSON.parse('{{ pro|safe }}'),
+        maxValue:100,
+        width:5,
+        text: JSON.parse('{{ pro|safe }}')+'%',
+        colors:colo,
+        duration:400,
+        wrpClass:'circles-wrp',
+        textClass:'circles-text',
+        styleWrapper:true,
+        styleText:true
+    })
+
+    
+    </script>
+
+{% endblock content %}

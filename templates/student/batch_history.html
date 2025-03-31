@@ -1,0 +1,98 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">My Courses</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            {% if data %}
+            
+            {% for i in data %}
+                <div class="col-lg-12 col-md-6 wow fadeInUp" data-wow-delay="0.1s" style="visibility: visible; animation-delay: 0.1s; animation-name: fadeInUp;">
+                    <div class="service-item rounded h-100 px-5 py-2 shadow-lg" style="border-radius: 8px;">
+                        <div class="d-flex align-items-center ms-n5 mb-2">
+                            <div class="service-icon flex-shrink-0 bg-primary rounded-end me-4">
+                                {% if i.batch.course.image %}
+                                    <img src="{{i.batch.course.image}}" class="img-fluid" height="100" width="120" alt="">
+                                {% else %}
+                                    <img src="{% static 'user/img/ol.jpg' %}" class="img-fluid" height="100" width="120" alt="">
+                                {% endif %}
+                            </div>
+                            <h4 class="mb-0">{{ i.batch.title }}</h4>
+                        </div>
+                        <div class="mb-2">
+                            <ul class="list-group">
+                                <li class="list-group-item"><i class="bi bi-star me-1 text-success"></i>Course : {{i.batch.course.course_name}}</li>
+                                <li class="list-group-item"><i class="bi bi-exclamation-octagon me-1 text-warning"></i>Educators : 
+                                    {% for j in i.batch.teacher.all %}
+                                    
+                                    {% if forloop.last %}
+                                    {{j.name}}
+                                    {% else %}
+                                    {{j.name}},
+                                    {% endif %}
+                                    
+                                    {% endfor %}</li>
+                                <li class="list-group-item"><i class="bi bi-collection me-1 text-primary"></i> Duration : {{ i.batch.start_date }} - {{ i.batch.end_date }} <h5 class="d-inline float-end text-success mb-2">₹{{ i.amount }}</h5></li>
+                            </ul>
+                        </div>
+                        <div class="">
+                            <btn class="btn btn-primary btn-sm px-3" style="border-radius: 8px;">
+                                <span class="filter">
+                                    <a class="h6" href="#" data-bs-toggle="dropdown">Assignment <i class="bi bi-three-dots ms-3"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Filter</h6>
+                                    </li>
+                
+                                    <li><a class="dropdown-item" href="{% url 'assignment' %}?b_id={{ i.batch_id }}">Assignment</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'submission' %}?b_id={{ i.batch_id }}">My Submissions</a></li>
+                                    </ul>
+                                </span>
+                            </btn>
+                            <btn class="btn btn-dark btn-sm px-3" style="border-radius: 8px;">
+                                <span class="filter">
+                                    <a class="h6 text-white" href="#" data-bs-toggle="dropdown">Exam <i class="bi bi-three-dots ms-3"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                    <li class="dropdown-header text-start">
+                                        <h6>Options</h6>
+                                    </li>
+                
+                                    <li><a class="dropdown-item" href="{% url 'exam_list' %}?b_id={{ i.batch_id }}">Exam</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'exam_history' %}?b_id={{ i.batch_id }}">My Exam history</a></li>
+                                    </ul>
+                                </span>
+                            </btn>
+                            <a class="btn btn-success btn-sm px-3" style="border-radius: 8px;" href="{% url 'progress' %}?b_id={{ i.batch_id }}">Progress</a>
+                            
+                            {% if i.cc == True %}
+                            <a class="btn btn-danger btn-sm px-3" style="border-radius: 8px;" href="{% url 'certificate' %}?e_id={{ i.e_id }}">Certificate</a>
+                            {% endif %}
+                                
+                            <a class="btn btn-secondary btn-sm px-3 float-end" style="border-radius: 8px;" href="{% url 'course_details' %}?b_id={{ i.batch_id }}">Details</a>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+            <h6>Not found any courses</h6>
+            {% endif %}
+                
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

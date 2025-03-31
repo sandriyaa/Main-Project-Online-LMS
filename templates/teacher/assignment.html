@@ -1,0 +1,135 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Assignment</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Assignment</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-8">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Assignment</h5>
+                    <form class="row g-3" action="{% url 'assignment' %}" id="myform" enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div class="col-md-12">
+                            <label for="" class="form-label">Topic</label>
+                            <input type="text" name="title" required class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-12">
+                            <label for="" class="form-label">Batches</label>
+                            <select class="form-control form-control-sm" required multiple name="batch_id" id="batch_id">
+                                {% if bat %}
+                                {% for i in bat %}
+                                    <option value="{{i.b_id}}">{{i.title}}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control form-control-sm" name="description" id="address"></textarea>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="" class="form-label">Due date</label>
+                            <input type="date" min="{% now 'Y-m-d' %}" class="form-control form-control-sm" name="due_date" id="image">
+                        </div>
+                        
+                        <div class="col-md-7">
+                            <label for="" class="form-label">Total mark</label>
+                            <input type="text" name="total_mark" required class="form-control form-control-sm">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    (function ($, W, D)
+    {
+    var JQUERY4U = {};
+    JQUERY4U.UTIL =
+    {
+    setupFormValidation: function ()
+    {
+    $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+    var check = false;
+    return this.optional(element) || regexp.test(value);
+    },
+    "Not a valid Input."
+    );
+    
+    //form validation rules
+    $("#myform").validate({
+    ignore: [],
+    rules: {
+                
+        title: {
+                    required: true,
+                    minlength: 1,
+                    },
+              
+        batch_id: {
+                    required: true
+                    },
+        
+        description: {
+                    required: true,
+                    minlength: 1,
+                    },
+        due_date: {
+                    required: true
+                    },
+        total_mark: {
+                required: true,
+                number: true
+                },
+        
+
+              },
+
+        messages: {
+
+            category_id: "Please select",
+            image:"Please select a image with extension jpg|jpeg|png"
+        
+    },
+    submitHandler: function (form) {
+    form.submit();
+    }
+    });
+    }
+    }
+    //when the dom has loaded setup form validation rules
+    $(D).ready(function ($) {
+    JQUERY4U.UTIL.setupFormValidation();
+    });
+    })(jQuery, window, document);
+    </script>
+
+{% endblock content %}

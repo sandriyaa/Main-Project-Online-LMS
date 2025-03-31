@@ -1,0 +1,59 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Batch Exams</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Batch Exams</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Batch Exams</h5>
+                    {% if data.exam_set.all %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Exam</th>
+                                    <th>Topic</th>
+                                    <th>Duration</th>
+                                    <th>Teacher</th>
+                                    <th>Result</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in data.exam_set.all %}
+                                <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <td>{{ i.title }}</td>
+                                    <td>{{ i.topic|truncatechars:25 }} </td>
+                                    <td>{{ i.et }}</td>
+                                    <td>{{ i.teacher.name }}</td>
+                                    <td><a href="{% url 'exam_results' %}?e_id={{i.e_id}}&b_id={{ data.b_id }}" class="btn btn-sm btn-warning">Exam Result <i class="bi bi-arrow-right"></i></a></td>
+                                    <td><a href="{% url 'exam_details' %}?e_id={{i.e_id}}&b_id={{ data.b_id }}" class="btn btn-sm btn-success">Details</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <h5>No list available</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+  {% endblock content %}

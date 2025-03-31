@@ -1,0 +1,140 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Student List</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Student List</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Student List</h5>
+                    {% if data %}
+                    <div class="row mb-2">
+                        <div class="col-5"></div>
+                        <div class="col-3">
+                            <input type="text" placeholder="Student name..." class="form-control form-control-sm" id="sname">
+                        </div>
+                        <div class="col-4">
+                            <select name="course_id" class="form-select form-select-sm" id="batch_id">
+                                <option value="">Choose...</option>
+                                {% if bat %}
+                                    {% for i in bat %}
+                                        <option value="{{i.b_id}}">{{ i.title }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th colspan="2">Student</th>
+                                    <th>Contact</th>
+                                    <th>Address</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>
+                                        
+                                        {% if i.image %}
+                                        <img src="{{i.image}}" height="60" width="60" class="rounded" alt="">
+                                        {% else %}
+                                        <img src="{% static 'user/img/dum.jpg' %}" height="60" width="60" class="rounded" alt="">
+                                        {% endif %}
+                                    </td>       
+                                    <th>{{i.name}}</th>
+                                    <td>{{i.email}} <br>
+                                        {{i.contact_number}}
+                                    </td>
+                                    <td>{{i.address}}</td>
+                                    <td>
+                                        {% if i.login.status == False %}
+                                            <a href="{% url 'login_status' %}?login_id={{ i.login_id }}&status=True" class="btn btn-sm btn-success">Allow access</a>
+                                        {% else %}
+                                            <a href="{% url 'login_status' %}?login_id={{ i.login_id }}&status=False" class="btn btn-sm btn-danger">Denial access</a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                        <h5>No list available</h5>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+      $("#batch_id").change(function () {
+            var batch_id = $(this).val();
+            
+            $.ajax({
+  
+                  url: '/search_student/',
+                  data: {
+                    'batch_id': batch_id,
+                  },
+                  
+                  success: function (data) {
+  
+                    $("#tb").html(data)
+  
+                    }
+            });
+          });
+    });
+    </script>
+
+<script>
+    $(document).ready(function () {
+      $("#sname").keyup(function () {
+            var sname = $(this).val();
+            
+            $.ajax({
+  
+                  url: '/search_student/',
+                  data: {
+                    'sname': sname,
+                  },
+                  
+                  success: function (data) {
+  
+                    $("#tb").html(data)
+  
+                    }
+            });
+          });
+    });
+    </script>
+
+  {% endblock content %}

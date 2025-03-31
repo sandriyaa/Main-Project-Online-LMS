@@ -1,0 +1,73 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Exam</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="tab-content">
+                
+                <div id="tab-1" class="tab-pane fade show p-0 active">
+                    {% for i in data %}
+                    <div class="job-item p-4 mb-4 shadow-lg">
+                        <div class="row g-4">
+                            <div class="col-sm-12 col-md-8 d-flex align-items-center">
+                                <div class="text-start ps-4">
+                                    <h5 class="mb-3">{{ i.assignment.title }}</h5>
+                                    <hr>
+                                    <p>
+                                        <span id="short-text-{{ forloop.counter }}" class="short-text">{{ i.assignment.description|truncatechars:60 }}...</span>
+                                        <span id="full-text-{{ forloop.counter }}" class="full-text" style="display:none;">{{ i.assignment.description|linebreaksbr }}</span>
+                                        <a href="javascript:void(0);" id="read-more-{{ forloop.counter }}" onclick="toggleText('{{ forloop.counter }}')" class="read-more small">Read More</a>
+                                    </p>
+                                    <span class="text-truncate me-3"><i class="fa fa-user fs-sm text-primary me-2"></i>{{ i.assignment.teacher.name }}</span>
+                                    <span class="text-truncate me-3"><i class="far fa-check-square fs-lg text-primary me-2"></i>Mark : {{ i.assignment.total_mark }}</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
+                                
+                                    <a href="{{ i.assignment_file }}" class="text-info mb-2">{{ i.assignment_file|slice:"7:" }}</a>
+                                
+                                <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Due date: {{ i.assignment.due_date }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                        <h3 class="font-monospace">Not Found Any Exam</h3>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleText(articleId) {
+        var fullText = document.getElementById('full-text-' + articleId);
+        var shortText = document.getElementById('short-text-' + articleId);
+        var readMoreLink = document.getElementById('read-more-' + articleId);
+
+        // Toggle visibility of full text
+        if (fullText.style.display === "none") {
+            fullText.style.display = "block";
+            shortText.style.display = "none";
+            readMoreLink.innerHTML = "Read Less";
+        } else {
+            fullText.style.display = "none";
+            shortText.style.display = "block";
+            readMoreLink.innerHTML = "Read More";
+        }
+    }
+</script>
+
+{% endblock content %}

@@ -1,0 +1,68 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Course batches </h6>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="bg-light rounded p-4">
+            <h4 class="mb-4 ml-0">Batches</h4>
+                {% for i in data %}
+                <div class="row g-4 mb-5 bg-white">
+                    <div class="col-3">
+                        {% if i.course.image %}
+                        <img src="{{i.course.image}}" class="img-fluid w-100" style="border-radius: 8px;" alt="">
+                        {% else %}
+                        <img src="{% static 'user/img/ol.jpg' %}" class="img-fluid w-100" style="border-radius: 8px;" alt="">
+                        {% endif %}
+                    </div>
+                    <div class="col-9">
+                        <div class="d-flex justify-content-between">
+                            <h5>{{ i.title }}</h5>
+                            <a href="{% url 'course_details' %}?b_id={{ i.b_id }}" class="link-hover text-body btn btn-sm px-4 btn-light fs-6" style="border-radius: 8px;"><i class="fas fa-long-arrow-alt-right me-1"></i> Details</a>
+                        </div>
+                        <h6>{{ i.course.course_name }}</h6>
+                        <small class="text-danger d-block mb-2"><i class="fas fa-calendar-alt me-1"></i> Last date for join : {{ i.closing_date }}</small>
+                        <small class="text-body mb-4">Course duration : {{ i.start_date }} - {{ i.end_date }}</small>
+                        <p class="mb-0">
+                            <i class="fas fa-users"></i> Educators :
+                                {% for j in i.teacher.all %}
+                                        
+                                {% if forloop.last %}
+                                {{j.name}}
+                                {% else %}
+                                {{j.name|add:','}}
+                                {% endif %}
+                                
+                                {% endfor %}
+                        </p>
+                        
+                        {% if i.exist %}
+                            <div class="badge badge-primary bg-primary rounded-pill">You joined</div>
+                        {% else %}
+                            <a href="{% url 'join_batch' %}?b_id={{ i.b_id }}" class="btn btn-primary btn-sm" style="border-radius: 5px;">Join ₹ {{ i.course.fees }}</a>
+                        {% endif %}
+                            
+                    </div>
+                </div>
+                {% empty %}
+                <h3 class="text-secondary">No Batches found <b>!</b></h3>
+                {% endfor %}
+            </div>
+           
+        </div>
+        
+    </div>
+</div>
+
+{% endblock content %}

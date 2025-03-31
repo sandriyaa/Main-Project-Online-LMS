@@ -1,0 +1,165 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Exam</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Exam</li>
+      </ol>
+    </nav>
+  </div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-9">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Exam</h5>
+                    <form class="row g-3" action="{% url 'exam' %}" method="post" id="myform">
+                        {% csrf_token %}
+                        <div class="col-md-12">
+                            <label for="title" class="form-label">Exam name</label>
+                            <input type="text" class="form-control form-control-sm" name="title" id="title">
+                        </div>
+                        <div class="col-md-12">
+                            <label for="topic" class="form-label">Topic</label>
+                            <textarea class="form-control form-control-sm" name="topic" id="topic"></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="duration" class="form-label">Duration</label>
+                            <input type="text" class="form-control form-control-sm" name="duration" id="duration">
+                        </div>
+                        <div class="col-md-2">
+                            <label for=""></label>
+                            <select class="form-control form-control-sm mt-1" name="format" required>
+                                <option value="">--Select--</option>
+                                <option value="hour">Hour</option>
+                                <option value="minute">Minute</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label for="" class="form-label">Batches</label>
+                            <select class="form-control form-control-sm" required multiple name="batch_id" id="batch_id">
+                                {% if bat %}
+                                {% for i in bat %}
+                                    <option value="{{i.b_id}}">{{i.title}}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    (function ($, W, D)
+    {
+    var JQUERY4U = {};
+    JQUERY4U.UTIL =
+    {
+    setupFormValidation: function ()
+    {
+    $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+    var check = false;
+    return this.optional(element) || regexp.test(value);
+    },
+    "Not a valid Input."
+    );
+    
+    //form validation rules
+    $("#myform").validate({
+    ignore: [],
+    rules: {
+                
+            
+            title: {
+                    required: true,
+                    minlength: 3,
+                    },
+            topic: {
+                    required: true,
+                    minlength: 3,
+                    },
+
+            duration: {
+                required: true,
+                number:true
+            },
+
+            format: {
+                required: true,
+            },
+
+            batch_id: {
+                required: true,
+            },
+
+                },
+
+        messages: {
+
+        quantity: "Please enter",
+        
+    },
+    submitHandler: function (form) {
+    form.submit();
+    }
+    });
+    }
+    }
+    //when the dom has loaded setup form validation rules
+    $(D).ready(function ($) {
+    JQUERY4U.UTIL.setupFormValidation();
+    });
+    })(jQuery, window, document);
+    </script>
+
+<script>
+    $(document).ready(function(){
+        $("#course_id").change(function(){
+        var course_id = $(this).val();
+
+            $.ajax({
+
+                url: '/display_subject/',
+                data: {
+                    'course_id': course_id
+                },
+                dataType: 'json',
+                success: function (data) {
+
+
+            let html_data = '<option value="">--Select--</option>';
+            data.forEach(function (data) {
+            html_data += `<option value="${data.s_id}">${data.subject}</option>`
+            });
+            $("#subject_id").html(html_data);
+
+                }
+            });
+
+        });
+    });
+    </script> 
+
+{% endblock content %}

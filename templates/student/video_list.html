@@ -1,0 +1,47 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Video lesson</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid my-5 p-0">
+            <div class="row g-4">
+                {% for i in data %}
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <a href="{% url 'video_play' %}?l_id={{ i.l_id }}" class="causes-item rounded-top overflow-hidden h-100">
+                        
+                        <div class="position-relative mt-auto shadow-lg">
+                            <video class="img-fluid">
+                                <source src="{{ i.video }}" type="video/mp4"></video>
+                                <source src="{{ i.video }}" type="video/webm"></video>
+                                <source src="{{ i.video }}" type="video/matroska"></video>
+                           
+                        </div>
+                        <div class="mt-0">
+                            <div class="causes-progress bg-light p-2 pb-0 border" style="border-radius: 5px;">
+                                <div class="align-center">
+                                    <h6 class="text-dark">{{ i.title }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %} 
+                <h3 class="text-secondary"><b>!</b> No Videos found.</h3> 
+                {% endfor %}
+            </div>
+           
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

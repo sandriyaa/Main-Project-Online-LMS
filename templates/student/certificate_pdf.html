@@ -1,0 +1,72 @@
+{% load static %}
+<html>
+    <head>
+        <style>
+            body{
+                font-family: "Roboto", sans-serif;
+            }
+            
+           
+            .symbol{
+                text-align: center;
+            }
+            .cer{
+                text-align: center;
+                font-size: 20px;
+                margin-top: 60px;
+            }
+            .heading{
+                text-align: center;
+                font-size: 35px;
+            }
+            
+            p{
+                text-align: justify;
+                line-height: 40px;
+                font-size: 15px;
+            }
+            .img{
+                height: 150px;
+                width: 150px;
+            }
+        </style>
+    </head>
+    <body>
+        
+    
+
+
+<div class="container-xxl py-5">
+   
+
+        <div class="row g-4">
+            
+            <div class="col-12">
+                <div class="symbol"><img src="{{ logo_url }}" class="img" alt=""></div>
+                <h2 class="heading">ONLINE LEANING MANAGEMENT SYSTEM</h2>
+                <hr>
+                <h3 class="cer text-center">Certificate of completion</h3>
+                <p>
+                    The academic board of of ONLINE LEANING MANAGEMENT SYSTEM certify that
+                     <b>"{{ data.student.name }}"</b> has successfully completed the training program
+                      in <b>"{{ data.batch.course.course_name }}"</b> from "{{ data.batch.start_date }}" to "{{ data.batch.end_date }}" at ONLINE LEANING MANAGEMENT SYSTEM Platform.
+                    </p>
+                    <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: left; font-size: 15px;">Issue date: {{ data.issue_date|date:"d-m-Y" }}</td>
+                            <td style="text-align: right;">
+                                <img src="{{ signature_url }}" class="img" alt="">
+                            </td>
+                        </tr>
+                    </table>
+                    
+            </div>
+                    
+            </div>
+                
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Exam</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="mb-5">
+                    <h2 class="mb-3">{{ exam.title }}</h2>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-decoration-none h6 m-0">{{ exam.course.course }}</span>
+                        </li>
+                       
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-decoration-none h6 m-0">Duration</span>
+                            <span>{{ exam.duration }}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-decoration-none h6 m-0">Topic</span>
+                        </li>
+                    </ul>
+                    <div style="word-wrap: break-word;">
+                        {{ exam.topic }}
+                    </div>
+                </div>
+           </div>
+
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="bg-light mb-5 py-3">
+                    <h3 class="py-3 px-4 m-0">Exam result</h3>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="my-3">Total Questions</h6>
+                        <h6 class="my-3">{{ exam.no_of_questions }}</h6>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="my-3">Attended Questions</h6>
+                        <h6 class="my-3">{{ exam.attended_questions }}</h6>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom px-4">
+                        <h6 class="my-3">Wrong Answers</h6>
+                        <h6 class="my-3">{{ exam.wrong }}</h6>
+                    </div>
+                    <h5 class="py-3 px-4 m-0">Total mark: {{ exam.total_mark }}/{{ exam.no_of_questions }}</h5>
+                </div>
+            </div>
+
+            <div class="col-lg-12 mt-5 mt-lg-0">
+                <h4>Your Answers</h4>
+                {% for question in exam.questions_set.all %}
+                    <div class="question-block">
+                        <h6>Q{{ forloop.counter }}. {{ question.question }}</h6>
+
+                        <ul>
+                            <li>A) {{ question.optionA }}</li>
+                            <li>B) {{ question.optionB }}</li>
+                            <li>C) {{ question.optionC }}</li>
+                            <li>D) {{ question.optionD }}</li>
+                        </ul>
+
+                        <p class="text-success"><strong>Answer:</strong> {{ question.answer }}</p>
+
+                        <p>
+                            <strong>Your Answer:</strong> 
+                            {% if question.answers_set.exists %}
+                                {{ question.answers_set.first.answer }}
+                            {% else %}
+                                <span style="color: orange;">Not Attended</span>
+                            {% endif %}
+                        </p>
+
+                        <p>
+                            <strong>Status:</strong> 
+                            {% if question.answers_set.exists and question.answers_set.first.answer == None %}
+                                <span style="color: orange;">Not Attended</span>
+                            {% elif question.answers_set.exists and question.answers_set.first.answer == question.answer %}
+                                <span style="color: green;">Correct</span>
+                            {% else %}
+                                <span style="color: red;">Wrong</span>
+                                
+                            {% endif %}
+                        </p>
+
+                        <hr>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,130 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl p-5">
+    
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Our Courses</h6>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="rounded bg-light p-3 overflow-hidden mb-2">
+                    <input type="text" placeholder="Search course..." id="cname" class="form-control form-control-sm border-0">
+                </div>
+                <div class="rounded bg-light pt-2 px-3 overflow-hidden mb-2"><h6>Filter <i class="bi bi-filter"></i></h6></div>
+                <div class="rounded bg-light p-3 overflow-hidden mb-2">
+                    <h6>Course category</h6>
+                    {% for i in cat %}
+                    <div class="mb-2"><input type="checkbox" name="category" value="{{i.ct_id}}" class="category p-2" id="category"><span class="font-weight-bold p-2">{{i.course_category}}</span></div>
+                    {% endfor %}
+                </div>
+                <div class="rounded bg-light p-3 overflow-hidden mb-2">
+                    <h6>Fees</h6>
+                    <div class="mb-2"><input type="checkbox" name="fees" value="500,1000"><span class="font-weight-bold p-2">500-1000</span></div>
+                    <div class="mb-2"><input type="checkbox" name="fees" value="1000,5000"><span class="font-weight-bold p-2">1000-5000</span></div>
+                    <div class="mb-2"><input type="checkbox" name="fees" value="5000,10000"><span class="font-weight-bold p-2">5000-10000</span></div>
+                    <div class="mb-2"><input type="checkbox" name="fees" value="10000,20000"><span class="font-weight-bold p-2">10000-20000</span></div>
+                    <div class="mb-2"><input type="checkbox" name="fees" value="20000,40000"><span class="font-weight-bold p-2">20000-40000</span></div>
+                    <div class="mb-2"><input type="checkbox" name="fees" value="40000+"><span class="font-weight-bold p-2">Above 40000</span></div>
+                </div>
+                <div class="rounded bg-light p-3 overflow-hidden mb-2">
+                    <h6>Duration</h6>
+                    <div class="mb-2"><input type="checkbox" name="mon" value="-1"><span class="font-weight-bold p-2">Below 1 Month</span></div>
+                    <div class="mb-2"><input type="checkbox" name="mon" value="1"><span class="font-weight-bold p-2">1 Month</span></div>
+                    <div class="mb-2"><input type="checkbox" name="mon" value="2,3"><span class="font-weight-bold p-2">2 - 3 Month</span></div>
+                    <div class="mb-2"><input type="checkbox" name="mon" value="3,6"><span class="font-weight-bold p-2">3 - 6 Month</span></div>
+                    <div class="mb-2"><input type="checkbox" name="mon" value="6,12"><span class="font-weight-bold p-2">6 - 12 Month</span></div>
+                    <div class="mb-2"><input type="checkbox" name="mon" value="12+"><span class="font-weight-bold p-2">Above 12</span></div>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="bg-light rounded p-4">
+                    <h4 class="mb-4">Course offered</h4>
+                    <div class="row g-4" id="tb">
+                        {% for i in data %}
+                        <div class="col-lg-6">
+                            <a href="{% url 'batches' %}?course_id={{ i.c_id }}" class="shadow-lg">
+                                <div class="d-flex align-items-center p-3 bg-white rounded">
+                                    {% if i.image %}
+                                        <img src="{{i.image}}" class="img-fluid" style="max-width: 7rem;max-height:7rem;border-radius: 1px;" alt="">
+                                    {% else %}
+                                        <img src="{% static 'user/img/ol.jpg' %}" class="img-fluid" style="max-width: 7rem;max-height:7rem;border-radius: 1px;" alt="">
+                                    {% endif %}
+                                    <div class="ms-3">
+                                        <p class="h6 mb-2">{{ i.course_name }}</p>
+                                        <p class="text-dark mt-3 mb-0 me-3"><span class="btn btn-light btn-sm" style="border-radius: 8px;background-color: rgb(245, 243, 243);">₹ {{ i.fees }}</span></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>   
+        </div>   
+    
+</div>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    $("input[type='checkbox']").change(function () {  // Listen to any checkbox change
+        var category = $('input[name="category"]:checked').map(function() {
+              return $(this).val();
+          }).get().join(',');
+
+        var fees = $('input[name="fees"]:checked').map(function() {
+              return $(this).val();
+          }).get().join(',');
+
+        var mon = $('input[name="mon"]:checked').map(function() {
+              return $(this).val();
+          }).get().join(',');
+
+        $.ajax({
+            url: '/search_course/',
+            data: {
+                'category': category,
+                'fees': fees,
+                'mon': mon
+            },
+            success: function (data) {
+                $("#tb").html(data);
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+      $("#cname").keyup(function () {
+            var cname = $(this).val();
+            
+            $.ajax({
+  
+                  url: '/search_course_text/',
+                  data: {
+                    'cname': cname,
+                  },
+                  
+                  success: function (data) {
+  
+                    $("#tb").html(data);
+  
+                    }
+            });
+          });
+    });
+    </script>
+ 
+{% endblock content %}

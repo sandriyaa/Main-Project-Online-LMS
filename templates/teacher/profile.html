@@ -1,0 +1,192 @@
+{% extends 'teacher/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Profile</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Profile</li>
+      </ol>
+    </nav>
+  </div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-9 m-auto">
+            {% if messages %}
+                {% for message in messages %}
+                <h6 class="alert alert-success p-2">{{message}}</h6>       
+                {% endfor %}
+            {% endif %}
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Profile</h5>
+                    <form class="row g-3" action="{% url 'profile' %}" method="post" enctype="multipart/form-data" id="myform">
+                        {% csrf_token %}
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Full name</label>
+                            <input type="text" class="form-control form-control-sm" value="{{data.name}}" name="name" id="name">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email id</label>
+                            <input type="email" class="form-control form-control-sm" value="{{data.email}}" name="email" id="email">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="contact_number" class="form-label">Contact number</label>
+                            <input type="text" class="form-control form-control-sm" value="{{data.contact_number}}" name="contact_number" id="contact_number">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control form-control-sm" name="address" id="address">{{data.address}}</textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="image" class="form-label">Image</label>
+                            <input type="file" class="form-control form-control-sm" name="image" id="image">
+                            {% if data.image %}
+                            <img src="{{data.image}}" height="60" width="60" class="rounded" alt="">
+                            {% else %}
+                            <img src="{% static 'user/img/dum.jpg' %}" height="60" width="60" class="rounded" alt="">
+                            {% endif %}
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-sm btn-primary">Submit</button>
+                        </div>
+                    </form>
+                    <a href="{% url 'change_password' %}" class="text-primary float-end">Change password ? </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    (function ($, W, D)
+    {
+    var JQUERY4U = {};
+    JQUERY4U.UTIL =
+    {
+    setupFormValidation: function ()
+    {
+    $.validator.addMethod(
+    "regex",
+    function(value, element, regexp) {
+    var check = false;
+    return this.optional(element) || regexp.test(value);
+    },
+    "Not a valid Input."
+    );
+    
+    //form validation rules
+    $("#myform").validate({
+    ignore: [],
+    rules: {
+                
+            name: {
+                    required: true,
+                    regex : /^[A-Za-z ]+$/,
+                    minlength: 3,
+                    },
+
+            contact_number: {
+                    required: true,
+                    digits:true,
+                    minlength: 10,
+                    maxlength: 10,
+                    regex : /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[6789]\d{9}$/
+                    },
+
+            email: {
+                     required: true,
+                     regex :  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+                    },
+            
+            address: {
+                    required: true,
+                    },
+
+            image: {
+                    extension:'jpg|jpeg|png'
+                    },
+
+            username: {
+                        required: true,
+                        regex : /^[A-Za-z0-9@]+$/,
+                        minlength: 5,
+                        maxlength: 15,
+                    },
+
+            password: {
+                        required: true,
+                        regex : /^[A-Za-z0-9@#*]+$/,
+                        minlength: 5,
+                        maxlength: 15,
+                    },
+
+            cpas: {
+                        required: true,
+                        regex : /^[A-Za-z0-9@#*]+$/,
+                        minlength: 5,
+                        maxlength: 15,
+                        equalTo: "#password"
+                    },
+                
+              },
+              messages: {
+    
+                contact_number: "Please Enter Valid 10 digit Phone Number - Starting from 6, 7 or 8 or 9",
+                image : "Please enter a value with a valid extension. jpg|jpeg|png",
+                username: "Please Enter Valid User Name(5-15 digit alphanumeric username",
+                password: "Please Enter Valid Password Name(5-15 digit alphanumeric  password  and @#* also allowed",
+                cpas: "Please Enter Valid Password Name(5-15 digit alphanumeric confirm password and same as above password and @#* also allowed",
+    },
+    submitHandler: function (form) {
+    form.submit();
+    }
+    });
+    }
+    }
+    //when the dom has loaded setup form validation rules
+    $(D).ready(function ($) {
+    JQUERY4U.UTIL.setupFormValidation();
+    });
+    })(jQuery, window, document);
+    </script>
+
+<script>
+    $("#username").keyup(function () {
+        $('#uname').val("");
+       var username = $(this).val();
+       var count = username.length;
+       $('#cb').html("");
+       
+       if(count>4)
+      {
+       $.ajax({
+             url: '/check_username/',
+             data: {
+                 'username': username
+             },
+             dataType: 'json',
+             success: function (data) {
+                  if (data.username_exists) {
+                        $('#cb').css('color','red');
+                        $('#cb').html(data.error);
+                  }
+                  else{
+                        $('#cb').css('color','green');
+                        $('#cb').html(data.success);
+                        $('#uname').val(1);
+                  }
+             }
+       });
+    }
+    });
+    </script>
+
+{% endblock content %}

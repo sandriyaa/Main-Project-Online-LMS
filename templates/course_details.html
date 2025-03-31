@@ -1,0 +1,146 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Course details </h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5">
+            <div class="col-lg-9 wow fadeInUp" data-wow-delay="0.5s">
+                <div class="h-100">
+                    <h3 class="mb-3">{{ data.title }}</h3>
+                    <p class="fs-4 text-primary mb-2">Course : {{ data.course.course_name }}</p>
+                    <small>
+                        
+                        {% if data.course.certificate_course %}
+                            Certificate course
+                        {% endif %}
+                            
+                    </small>
+                    <div class="border-top my-4 pt-4 ">
+                        <div class="row g-4">
+                            <div class="col-sm-6 d-flex wow fadeIn" data-wow-delay="0.1s">
+                                <h6 class="text-danger mb-0">Closing date :{{ data.closing_date }}</h6>
+                            </div>
+                            <div class="col-sm-6 d-flex wow fadeIn" data-wow-delay="0.3s">
+                                <h6 class="text-success mb-0">Duration : {{ data.start_date }} - {{ data.end_date }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <img class="flex-shrink-0 me-3" style="height: 50px;width: 50px;" src="{% static 'user/img/icon/icon-06-primary.png' %}" alt="">
+                                <h6 class="mb-0">Pre recorded sessions</h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <img class="flex-shrink-0 me-3" style="height: 50px;width: 50px;" src="{% static 'user/img/icon/icon-07-primary.png' %}" alt="">
+                                <h6 class="mb-0">Top Educators</h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <img class="flex-shrink-0 me-3" style="height: 50px;width: 50px;" src="{% static 'user/img/icon/icon-04-primary.png' %}" alt="">
+                                <h6 class="mb-0">Assessments</h6>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="d-flex align-items-center">
+                                <img class="flex-shrink-0 me-3" style="height: 50px;width: 50px;" src="{% static 'user/img/icon/icon-03-primary.png' %}" alt="">
+                                <h6 class="mb-0">24x7 Doubt clearance</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-4 h6">Subjects : 
+                        
+                        {% for i in data.course.subjects.all %}
+                            {% if forloop.last %}
+                            {{i.subject}}
+                            {% else %}
+                            {{i.subject}},
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    <p class="mb-4">{{ data.course.description|linebreaksbr }}</p>
+                    <div class="border-top mt-4 pt-4">
+                        <div class="d-flex justify-content-between">
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#verticalycentered" class="btn btn-warning px-5 btn-sm align-self-center" style="border-radius: 5px;">Buy now</button>
+                            <span class="btn btn-sm btn-light fs-6" style="border-radius: 5px;background-color: rgb(203, 248, 189);">₹ {{ data.course.fees }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="p-1">
+                            <h4 class="my-4">Educators</h4>
+                            <div class="row g-4">
+                                
+                                {% for i in data.teacher.all %}
+                                    
+                                <div class="col-12">
+                                    <div class="row g-4 align-items-center features-item">
+                                        <div class="col-4">
+                                            <div class="rounded-circle position-relative">
+                                                <div class="overflow-hidden rounded-circle">
+                                                    {% if i.image %}
+                                                    <img src="{{i.image}}" class="img-zoomin img-fluid rounded-circle w-100" alt="">
+                                                    {% else %}
+                                                    <img src="{% static 'user/img/dum.jpg' %}" class="img-zoomin img-fluid rounded-circle w-100" alt="">
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="features-content d-flex flex-column">
+                                                <p class="text-uppercase mb-2 small">{{ i.subject.subject }}</p>
+                                                <p class="h6">
+                                                    {{ i.name }}
+                                                </p>
+                                                <!-- <small class="text-body d-block"><i class="fas fa-calendar-alt me-1"></i> December 9, 2024</small> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                    
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="verticalycentered" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Login required to join.!</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-sm" style="border-radius: 5px;" data-bs-dismiss="modal">Cancel</button>
+          <a class="btn btn-success btn-sm" href="{% url 'login' %}" style="border-radius: 5px;">Log in</a>
+          <a class="btn btn-info btn-sm" href="{% url 'student_register' %}" style="border-radius: 5px;">New User?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

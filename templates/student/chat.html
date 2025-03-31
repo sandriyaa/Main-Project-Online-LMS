@@ -1,0 +1,158 @@
+{% extends 'student/header.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5 align-items-end mb-5">
+            <div class="col-lg-12 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="border-start border-5 border-primary ps-4">
+                    <h6 class="text-body text-uppercase mb-2">Doubt</h6>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-3 bg-light" style="border-radius: 5px;">
+            <div class="row py-2">
+                {% if data %}
+                <div class="col-lg-4" style="height: 30rem;overflow-y: auto;">
+                <h6 class="card-title">Chat</h6>
+
+                    
+                    {% for i in data %}
+                    <a href="{% url 'doubt' %}?teacher_id={{i.teacher_id}}&b_id={{ b_id }}" class="row bg-white border-bottom p-2 mb-2 shadow-sm" style="border-radius: 5px;">
+                        <div class="col-2">
+                            {% if i.teacher_image %}
+                                <img src="{{i.teacher_image}}" style="max-height: 45px;" class="rounded-circle border border-1" alt="">
+                                {% else %}
+                                <img src="{% static 'user/img/dum.jpg' %}" style="max-height: 45px;" class="rounded-circle border border-1" alt="">
+                                {% endif %}
+                        </div>
+                        <div class="col-8">
+                            <h6 class="mt-2 fw-bold text-dark text-decoration-none">{{i.teacher_name}}</h6>
+                        </div>
+                        <div class="col-2 d-flex align-items-center">
+                            
+                            {% if i.unread_count > 0 %}
+                            <div class="badge text-white bg-danger rounded-circle">{{ i.unread_count }}</div>
+                                
+                            {% endif %}
+                                
+                            
+                        </div>
+                    </a>
+                    {% endfor %}
+                    
+                </div>
+                <div class="col-lg-8 px-2">
+                    <div class="div h-100 p-3 border border-2 bg-white" style="border-radius: 5px;">
+                        
+                        {% if chatdata %}
+                            <div class="row border-bottom">
+                                <div class="col-1">
+                                    {% if teacher.image %}
+                                    <img src="{{ teacher.image }}" class="rounded-circle" style="max-height: 50px;">
+                                    {% else %}
+                                    <img src="{% static 'user/img/dum.jpg' %}" class="rounded-circle" style="max-height: 50px;">
+                                    {% endif %}
+                                    
+                                </div>
+                                <div class="col-11">
+                                    <h5 class="mt-2">{{teacher.name}}</h5>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12" style="height: 22rem;overflow-y: auto;display: flex;flex-direction: column-reverse;">
+                                    <div class="row p-2" id="tb">
+                                        {% for i in chatdata %}
+                                            {% if i.sender_id == request.session.login_id %}
+                                                <div class="col-12">
+                                                    <div class="mt-2 bg-white border p-2 w-75 float-end" style="font-size: small;border-radius: 5px;">
+                                                        {{i.msg}}
+                                                        <p class="mb-0 mt-2" style="font-size: xx-small;">{{i.msg_date}}</p>
+                                                    </div>
+                                                    
+                                                </div>
+                                            {% else %}
+                                                <div class="col-12">
+                                                    <div class="mt-2 bg-light border p-2 w-75" style="font-size: small;border-radius: 5px;">
+                                                        {{i.msg}}
+                                                        <p class="mt-2 mb-0" style="font-size: xx-small;">{{i.msg_date}}</p>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            <form action="{% url 'doubt' %}" method="post" id="doubtForm">
+                                {% csrf_token %}
+                            <div class="row p-2">
+                                <div class="col-12 d-flex">
+                                    <input type="hidden" id="teacher" name="receiver_id" value="{{teacher.login_id}}">
+                                    <textarea class="form-control border-0 shadow-lg" rows="1" required  name="msg" placeholder="Type a message"></textarea>
+                                    <button class="btn btn-skew" id="submitBtn" type="button"><i class="fa fa-paper-plane"></i></button>
+                                </div>
+                            </div>
+                            </form>
+                            
+                        {% endif %}
+                            
+                    </div>
+                    
+                </div>
+                {% else %}
+                    <h6>!Not found any doubt</h6>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'Validation/jquery-1.11.1.min.js' %}"></script>
+<script src="{% static 'Validation/jquery_validate.js' %}"></script>
+<script src="{% static 'Validation/additional_validate.js' %}"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#submitBtn").click(function () {  
+            var formData = $("#doubtForm").serialize();  
+            
+            $.ajax({
+                type: "POST",
+                url: "{% url 'doubt' %}",  
+                data: formData,
+                success: function (data) {
+                    $("textarea[name='msg']").val("");  
+                    $("#tb").html(data);
+                }
+            });
+        });
+    });
+    </script>
+
+<script>
+    $(document).ready(function () {
+        function fetchMessages() {
+            var teacher_id = $('#teacher').val();
+            
+            $.ajax({
+                url: '/chat_user/',
+                data: {
+                    'teacher_id': teacher_id,
+                },
+                success: function (data) {
+                    $("#tb").html(data);
+                }
+            });
+        }
+
+        fetchMessages();
+        setInterval(fetchMessages, 5000);
+    });
+</script>
+
+
+{% endblock content %}

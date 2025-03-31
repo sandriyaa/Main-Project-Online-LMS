@@ -1,0 +1,76 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Lesson</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Lesson</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+
+                    <h5 class="card-title">Lesson</h5>
+                    
+                    {% if data %}
+                        
+                    
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Title</th>
+                                    <th>Video</th>
+                                    <th>Subject</th>
+                                    <th>Date</th>
+                                    <th>Lecture note</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tb">
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>
+                                        <video width="180" height="140" preload="auto" playsinline controls controlsList="nodownload">
+                                            <source src="{{ i.video }}" type="video/mp4"></video>
+                                            <source src="{{ i.video }}" type="video/webm"></video>
+                                            <source src="{{ i.video }}" type="video/matroska"></video>
+
+                                    </td>
+                                    <td>{{ i.title }}</td>       
+                                    
+                                    <td>{{i.subject.subject}} </td>
+                                    <td>{{i.created_at}} </td>
+                                    <td>
+                                        
+                                        {% for j in i.lecture_notes_set.all %}
+                                            {{ forloop.counter }}. <a href="{{ j.note }}" class="text-primary">{{ j.note|slice:"7:" }}</a><br>
+                                        {% empty %}
+                                            No lecture notes added
+                                        {% endfor %}
+                                            
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <h5>No list available</h5>
+                    {% endif %}
+                </div>
+              </div>
+          </div>
+    </div>
+</section>
+
+{% endblock content %}

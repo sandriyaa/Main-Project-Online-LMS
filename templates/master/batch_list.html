@@ -1,0 +1,124 @@
+{% extends 'master/header.html' %}
+{% load static %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Batch</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active">Batch List</li>
+      </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        {% if messages %}
+            {% for message in messages %}
+            <h6 class="alert alert-success p-2">{{message}}</h6>       
+            {% endfor %}
+        {% endif %}
+        {% if data %}
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Batches</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Batch</th>
+                                    <th>Course</th>
+                                    <th>Teahers</th>
+                                    <th>Closing date</th>
+                                    <th>Duration</th>
+                                    <th>Status</th>
+                                    <th colspan="2">#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in data %}
+                                <tr>
+                                    <th>{{forloop.counter}}</th>
+                                    <td>{{i.title}}</td>
+                                    <td>{{i.course.course_name}}</td>
+                                    <td>
+                                        {% for j in i.teacher.all %}
+                                        
+                                        {% if forloop.last %}
+                                        {{j.name}}
+                                        {% else %}
+                                        {{j.name|add:','}}
+                                        {% endif %}
+                                        
+                                        {% endfor %}
+                                    </td>
+                                    <td>{{i.closing_date}}</td>
+                                    <td>{{i.start_date}}-{{i.end_date}}</td>
+                                    <td>
+                                        {% if i.status == False %}
+                                        <button type="button" class="btn btn-sm btn-warning mb-1" data-bs-toggle="modal" data-bs-target="#verticalycentered{{ forloop.counter }}">
+                                            Publish
+                                        </button>
+                                        <div class="modal fade" id="verticalycentered{{ forloop.counter }}" tabindex="-1" aria-hidden="true" style="display: none;">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Publish batch</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="alert alert-danger px-1 alert-dismissible fade show" role="alert">
+                                                            <h6 class="fw-bold">Are you sure you want to set batch as active?</h6>
+                                                            <hr>
+                                                            <p class="text-warning h6"><i class="bi bi-exclamation-triangle"></i> Alert</p>
+                                                            <p class="mb-0">Once the batch is activated, you will not be able to edit it.</p>
+                                                        </div>
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-sm btn-danger px-4" data-bs-dismiss="modal">No</button>
+                                                            <a href="{% url 'active_batch' %}?b_id={{ i.b_id }}" class="btn btn-sm btn-primary px-4 ms-2">Yes</a>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </td>
+                                    <td><a href="{% url 'edit_batch' %}?b_id={{i.b_id}}" class="btn btn-sm btn-primary">Edit</a></td>
+                                    <td><a href="{% url 'delete_batch' %}?b_id={{i.b_id}}" class="btn btn-sm btn-danger">Delete</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    function toggleText(articleId) {
+        var fullText = document.getElementById('full-text-' + articleId);
+        var shortText = document.getElementById('short-text-' + articleId);
+        var readMoreLink = document.getElementById('read-more-' + articleId);
+
+        // Toggle visibility of full text
+        if (fullText.style.display === "none") {
+            fullText.style.display = "block";
+            shortText.style.display = "none";
+            readMoreLink.innerHTML = "Read Less";
+        } else {
+            fullText.style.display = "none";
+            shortText.style.display = "block";
+            readMoreLink.innerHTML = "Read More";
+        }
+    }
+</script>
+
+
+{% endblock content %}
